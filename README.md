@@ -33,6 +33,13 @@ docpkg init --npm
 
 ### Managing Sources
 
+Prepare your own repo for consumption:
+
+```bash
+# Interactive wizard to generate .docpkg-manifest.json
+docpkg manifest
+```
+
 Add documentation sources:
 
 ```bash

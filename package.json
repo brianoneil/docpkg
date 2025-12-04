@@ -1,6 +1,6 @@
 {
   "name": "docpkg",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Documentation package manager",
   "type": "module",
   "bin": {
@@ -39,6 +39,7 @@
     "commander": "^14.0.2",
     "fs-extra": "^11.3.2",
     "gray-matter": "^4.0.3",
+    "inquirer": "^13.0.2",
     "ora": "^9.0.0",
     "semver": "^7.7.3",
     "tar": "^7.5.2",

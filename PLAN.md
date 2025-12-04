@@ -83,6 +83,7 @@
     - [x] Implement `docpkg info`
     - [x] Implement `docpkg verify`
     - [x] Implement `docpkg update`
+    - [x] Implement `docpkg manifest` (interactive generator)
 
 ## Future Phases (Backlog)
 

@@ -12,6 +12,7 @@ import { cleanCommand } from './commands/clean.js';
 import { infoCommand } from './commands/info.js';
 import { verifyCommand } from './commands/verify.js';
 import { updateCommand } from './commands/update.js';
+import { manifestCommand } from './commands/manifest.js';
 
 // Load package.json to get version
 const packageJson = await fs.readJson(new URL('../package.json', import.meta.url));
@@ -33,5 +34,6 @@ program.addCommand(cleanCommand());
 program.addCommand(infoCommand());
 program.addCommand(verifyCommand());
 program.addCommand(updateCommand());
+program.addCommand(manifestCommand());
 
 program.parse();
