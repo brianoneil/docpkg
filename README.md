@@ -1,15 +1,22 @@
 # docpkg: Documentation Package Manager
 
-`docpkg` is a command-line tool for managing documentation dependencies. It allows you to install, version, and bundle documentation from various sources (NPM, Git, HTTP, local files) specifically for AI context generation and developer reference.
+![License](https://img.shields.io/npm/l/docpkg)
+![Version](https://img.shields.io/npm/v/docpkg)
+
+**docpkg** is a modern package manager for documentation. It treats documentation as a first-class dependency, allowing you to install, version, and bundle markdown files from NPM, Git, and URLs.
+
+It is specifically designed for the AI era, providing tools to **index** and **bundle** documentation into optimized context for LLMs.
+
+## Why?
+
+- **For Developers**: Centralize documentation from multiple repos/libraries into one `docs/` folder.
+- **For AI Agents**: Generate a single `context.md` or JSON index of all your project's dependencies to feed into LLMs.
+- **For Teams**: Share internal guides via private Git repos or NPM packages without copy-pasting files.
 
 ## Installation
 
 ```bash
-# Install globally
 npm install -g docpkg
-
-# Or run directly with npx
-npx docpkg <command>
 ```
 
 ## Usage
@@ -102,3 +109,7 @@ docpkg clean
   }
 }
 ```
+
+## License
+
+MIT

@@ -10,9 +10,30 @@
   "scripts": {
     "test": "mocha test/**/*.test.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "license": "MIT",
+  "files": [
+    "bin",
+    "cli",
+    "core",
+    "adapters",
+    "utils",
+    "index.js",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brainivy/docpkg.git"
+  },
+  "keywords": [
+    "documentation",
+    "package-manager",
+    "ai",
+    "context",
+    "llm",
+    "docs",
+    "markdown"
+  ],
   "dependencies": {
     "chalk": "^5.6.2",
     "commander": "^14.0.2",
