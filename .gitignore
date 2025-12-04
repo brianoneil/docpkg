@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# docpkg specific
+docpkg-lock.json
+docs/
+.docpkg/
+
+# Testing
+test-playground/
+test-remove/
+test-sync/
+smoke-test-env/
+.nyc_output/
+coverage/
+
+# System
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Build/Dist (future)
+dist/
+lib/
