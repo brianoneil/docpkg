@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.4] - 2025-12-04
+
+### Changed
+- **Documentation**: Added comprehensive Command Reference to `README.md` with sample outputs.
+
 ## [1.3.3] - 2025-12-04
 
 ### Changed
