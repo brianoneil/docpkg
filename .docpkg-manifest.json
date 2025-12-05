@@ -1,0 +1,15 @@
+{
+  "name": "docpkg",
+  "version": "1.2.0",
+  "type": "git",
+  "docsPath": ".",
+  "files": [
+    "README.md",
+    "CHEATSHEET.md"
+  ],
+  "metadata": {
+    "title": "docpkg Documentation",
+    "description": "Self-documentation for the docpkg tool",
+    "tags": ["documentation", "package-manager", "tooling", "ai"]
+  }
+}

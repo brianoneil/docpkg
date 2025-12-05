@@ -31,17 +31,26 @@ docpkg add npm:@anthropic/prompt-docs
 
 ### Managing Sources
 
-Add documentation sources (automatically installs and indexes):
+Prepare your own repo for consumption (like this one!):
 
 ```bash
+docpkg manifest
+```
+
+Add documentation sources:
+
+```bash
+# Add docpkg's own documentation (Meta example!)
+docpkg add git:https://github.com/brianoneil/docpkg.git#main --name docpkg-docs
+
 # Add from NPM
 docpkg add npm:@anthropic/prompt-docs@latest
 
 # Add from Git (branch/tag/commit)
 docpkg add git:https://github.com/org/repo.git#main
 
-# Add from URL
-docpkg add https://example.com/api-spec.json --name api
+# Add from URL (Gist example)
+docpkg add https://gist.githubusercontent.com/brianoneil/12345/raw/cheatsheet.md --name cheatsheet
 
 # Add local folder
 docpkg add file:./internal-docs --name internal
@@ -102,8 +111,8 @@ docpkg clean
   "version": "1",
   "installPath": "docs",
   "sources": {
-    "my-docs": "npm:my-pkg-docs@^1.0.0",
-    "api": "https://api.com/spec.md"
+    "docpkg": "git:https://github.com/brianoneil/docpkg.git#main",
+    "my-docs": "npm:my-pkg-docs@^1.0.0"
   }
 }
 ```

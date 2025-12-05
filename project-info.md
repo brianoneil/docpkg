@@ -1026,7 +1026,12 @@ brew install docpkg
    - Auto-update on source changes
    - `docpkg watch` command
 
-3. **Additional Package Managers**
+3. **Global & MCP Support (Future)**
+   - `docpkg -g add <source>`: Global documentation registry.
+   - `docpkg mcp`: Model Context Protocol server to expose docs to AI agents.
+   - `docpkg link`: Link local project docs to global MCP registry.
+
+4. **Additional Package Managers**
    - PyPI adapter
    - RubyGems adapter
    - Other language ecosystems
