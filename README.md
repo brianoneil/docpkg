@@ -1,8 +1,5 @@
 # docpkg: Documentation Package Manager
 
-![License](https://img.shields.io/npm/l/docpkg)
-![Version](https://img.shields.io/npm/v/docpkg)
-
 **docpkg** is a modern package manager for documentation. It treats documentation as a first-class dependency, allowing you to install, version, and bundle markdown files from NPM, Git, and URLs.
 
 It automatically manages **syncing** from node_modules and **indexing** your documentation for AI context, providing a seamless developer experience.

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.6] - 2025-12-04
+
+### Maintenance
+- Removed badges from README to troubleshoot NPM rendering issues.
+
 ## [1.3.5] - 2025-12-04
 
 ### Maintenance
