@@ -4,6 +4,7 @@ import path from 'path';
 import { logger } from '../../core/logger.js';
 import { ConfigManager } from '../../core/config.js';
 import { LockfileManager } from '../../core/lockfile.js';
+import { copyGlob } from '../../utils/glob-copy.js';
 
 export function syncCommand() {
   return new Command('sync')
@@ -58,45 +59,37 @@ export function syncCommand() {
                     continue;
                 }
 
-                // Determine files to copy
-                // Strategy: similar to NpmAdapter.extract but from directory
                 const targetDir = path.join(installPath, depName);
                 
-                // Clean if force or simple overwrite
                 if (options.force) {
                    await fs.emptyDir(targetDir);
                 } else {
                    await fs.ensureDir(targetDir);
                 }
 
-                // Determine source docs path
-                let sourceDocsPath;
-                if (manifest.docsPath) {
-                    sourceDocsPath = path.join(depPath, manifest.docsPath);
-                } else {
-                    sourceDocsPath = path.join(depPath, 'docs'); // Fallback
+                // Determine files to copy using Manifest "files" glob
+                // If no "files" array, default to "docs/**" or docsPath
+                let patterns = ['docs/**'];
+                if (manifest.files && manifest.files.length > 0) {
+                    patterns = manifest.files;
+                } else if (manifest.docsPath) {
+                    patterns = [`${manifest.docsPath}/**`];
                 }
 
-                if (await fs.pathExists(sourceDocsPath)) {
-                    // Check if we need to update lockfile or if it's already "installed"
-                    // For sync, we assume node_modules is the source of truth
-                    
-                    await fs.copy(sourceDocsPath, targetDir, { overwrite: true });
-                    
-                    // Update lockfile
-                    lockfileManager.setEntry(depName, {
-                        type: 'npm',
-                        resolved: `npm:${depName}@${pkgJson.version}`,
-                        integrity: 'n/a', // We don't easily have the tarball hash here without more work
-                        extractedPath: path.relative(cwd, targetDir),
-                        installedAt: new Date().toISOString()
-                    });
-                    
-                    syncedCount++;
-                    logger.success(`Synced ${depName}`);
-                } else {
-                    logger.warn(`Docs path not found for ${depName}: ${sourceDocsPath}`);
-                }
+                // Use copyGlob
+                await copyGlob(depPath, targetDir, patterns, manifest.docsPath || 'docs');
+                
+                // Update lockfile
+                lockfileManager.setEntry(depName, {
+                    type: 'npm',
+                    resolved: `npm:${depName}@${pkgJson.version}`,
+                    integrity: 'n/a',
+                    extractedPath: path.relative(cwd, targetDir),
+                    installedAt: new Date().toISOString()
+                });
+                
+                syncedCount++;
+                logger.success(`Synced ${depName}`);
             }
         }
 

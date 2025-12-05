@@ -5,11 +5,13 @@ import path from 'path';
 import fs from '../utils/fs.js';
 import { logger } from '../core/logger.js';
 import crypto from 'crypto';
+import { copyGlob } from '../utils/glob-copy.js';
 
 // Lazy promisify to allow mocking cp.exec
 const execAsync = (cmd, opts) => util.promisify(cp.exec)(cmd, opts);
 
 export class GitAdapter extends BaseAdapter {
+// ... (parse, resolve, fetch methods remain unchanged)
   parse(source) {
     if (source.startsWith('git:')) {
       const urlParts = source.substring(4).split('#');
@@ -103,32 +105,26 @@ export class GitAdapter extends BaseAdapter {
         logger.debug(`Checking out ${resolvedSource.commit} in cache...`);
         await execAsync(`git checkout ${resolvedSource.commit}`, { cwd: cachedPath });
         
-        // TODO: Support subdirectory extraction if specified in future
-        // For now, copy "docs" folder or similar logic to NPM
-        
-        // Similar logic to NPM: Check for manifest, or look for docs/
+        // Check for manifest
         const manifestPath = path.join(cachedPath, '.docpkg-manifest.json');
-        
-        // Determine what to copy
-        // Simple implementation: Copy 'docs' folder if exists, else warn
-        const sourceDocsPath = path.join(cachedPath, 'docs');
-        
+        let patterns = ['docs/**'];
+        let basePath = 'docs'; // Default
+
         if (await fs.pathExists(manifestPath)) {
             const manifest = await fs.readJson(manifestPath);
-            if (manifest.docsPath) {
-                const specificDocsPath = path.join(cachedPath, manifest.docsPath);
-                 if (await fs.pathExists(specificDocsPath)) {
-                    await fs.copy(specificDocsPath, targetDir);
-                    return;
-                 }
+            if (manifest.files && manifest.files.length > 0) {
+                patterns = manifest.files;
+            } else if (manifest.docsPath) {
+                patterns = [`${manifest.docsPath}/**`];
             }
-            // TODO: Handle manifest.files glob patterns
+            if (manifest.docsPath) basePath = manifest.docsPath;
         }
         
-        if (await fs.pathExists(sourceDocsPath)) {
-            await fs.copy(sourceDocsPath, targetDir);
-        } else {
-            logger.warn(`No 'docs' directory found in ${resolvedSource.url}`);
+        // Use copyGlob
+        const copiedCount = await copyGlob(cachedPath, targetDir, patterns, basePath);
+        
+        if (!copiedCount) {
+            logger.warn(`No docs extracted from ${resolvedSource.url}`);
         }
 
     } catch (error) {

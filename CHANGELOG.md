@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.3] - 2025-12-04
+
+### Fixed
+- **Correct Extraction**: `sync` and `install` now respect the glob patterns in `.docpkg-manifest.json`, fixing an issue where unwanted files (like `.js` files) were copied from `node_modules`.
+
 ## [1.2.2] - 2025-12-04
 
 ### Fixed

@@ -1,6 +1,6 @@
 {
   "name": "docpkg",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "Documentation package manager",
   "type": "module",
   "bin": {
@@ -39,6 +39,7 @@
   "dependencies": {
     "chalk": "^5.6.2",
     "commander": "^14.0.2",
+    "fast-glob": "^3.3.3",
     "fs-extra": "^11.3.2",
     "gray-matter": "^4.0.3",
     "inquirer": "^13.0.2",
