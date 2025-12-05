@@ -68,6 +68,17 @@ export class Indexer {
     return index;
   }
 
+  async save() {
+      const index = await this.generateIndex();
+      const outputPath = path.join(this.config.installPath, 'index.json'); // Use absolute path via generateIndex logic? 
+      // config.installPath is relative usually.
+      const absoluteOutputPath = path.resolve(process.cwd(), this.config.installPath, 'index.json');
+      
+      await fs.ensureDir(path.dirname(absoluteOutputPath));
+      await fs.writeJson(absoluteOutputPath, index, { spaces: 2 });
+      return index;
+  }
+
   async bundle(options = {}) {
     // options: { sources: [], tags: [], include: string }
     const index = await this.generateIndex();

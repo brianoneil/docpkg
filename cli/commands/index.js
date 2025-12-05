@@ -19,25 +19,25 @@ export function indexCommand() {
         const indexer = new Indexer(config);
         logger.info('Generating index...');
         
-        const index = await indexer.generateIndex();
-        
         // Determine output path
-        let outputPath = options.output;
-        if (!outputPath) {
-            outputPath = path.join(config.installPath, 'index.json');
-        }
-        
-        logger.info(`Writing index to ${outputPath}...`);
-        
-        if (options.format === 'json') {
-            await fs.writeJson(outputPath, index, { spaces: 2 });
+        if (options.output) {
+            const index = await indexer.generateIndex();
+            const outputPath = options.output;
+            
+            logger.info(`Writing index to ${outputPath}...`);
+            
+            if (options.format === 'json') {
+                await fs.writeJson(outputPath, index, { spaces: 2 });
+            } else {
+                logger.warn('YAML format not yet supported, defaulting to JSON');
+                await fs.writeJson(outputPath, index, { spaces: 2 });
+            }
+            logger.success(`Index generated with ${index.files.length} files.`);
         } else {
-            // TODO: Implement YAML output if needed, for now JSON is default
-            logger.warn('YAML format not yet supported, defaulting to JSON');
-            await fs.writeJson(outputPath, index, { spaces: 2 });
+            // Default save
+            const index = await indexer.save();
+            logger.success(`Index saved to ${path.join(config.installPath, 'index.json')} with ${index.files.length} files.`);
         }
-        
-        logger.success(`Index generated with ${index.files.length} files.`);
 
       } catch (error) {
         logger.error(error.message);

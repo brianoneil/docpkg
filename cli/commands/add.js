@@ -103,7 +103,7 @@ export function addCommand() {
         // Auto-Index
         const indexer = new Indexer(configManager.get());
         await logger.task('Updating index', async () => {
-            await indexer.generateIndex();
+            await indexer.save();
         });
 
     } catch (error) {

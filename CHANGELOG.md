@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.3.2] - 2025-12-04
+
+### Changed
+- **UI Polish**: `docpkg list` now displays installed packages in a cleaner, tree-like structure with detailed stats (files, tokens).
+
+## [1.3.1] - 2025-12-04
+
+### Fixed
+- **Missing Index**: Fixed a bug where `docpkg add` and other commands were generating the index in memory but not saving it to disk, causing `docpkg list` to show no token counts.
+
 ## [1.3.0] - 2025-12-04
 
 ### Added

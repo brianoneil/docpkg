@@ -33,7 +33,7 @@ export function updateCommand() {
 
         const indexer = new Indexer(config);
         await logger.task('Updating index', async () => {
-            await indexer.generateIndex();
+            await indexer.save();
         });
 
       } catch (error) {

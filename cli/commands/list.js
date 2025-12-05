@@ -21,7 +21,7 @@ export function listCommand() {
         await lockfileManager.load();
         const lockfile = lockfileManager.data;
 
-        // Load index if available for token stats
+        // Load index if available
         let indexData = null;
         const indexPath = path.join(config.installPath, 'index.json');
         if (await fs.pathExists(indexPath)) {
@@ -39,29 +39,38 @@ export function listCommand() {
             return;
         }
 
-        logger.info(chalk.bold('Configured Sources:'));
+        console.log(''); // Spacer
+        logger.info(chalk.bold(`Configured Sources (${sources.length})`));
+        console.log('');
+
         sources.forEach(name => {
             const sourceSpec = config.sources[name];
             const installed = lockfile.sources[name];
             
-            let status = chalk.gray('(not installed)');
-            let extraInfo = '';
+            console.log(chalk.bold(`📦 ${name}`));
+            console.log(chalk.gray(`   ├─ Source: `) + chalk.cyan(sourceSpec));
 
             if (installed) {
-                status = chalk.green(`(installed: ${installed.resolved})`);
+                // Version info
+                let verInfo = installed.version || installed.commit || installed.ref || 'unknown';
+                let dateInfo = installed.installedAt ? ` (${new Date(installed.installedAt).toLocaleDateString()})` : '';
+                console.log(chalk.gray(`   ├─ Installed: `) + chalk.green(verInfo) + chalk.gray(dateInfo));
                 
-                // Calculate tokens from index
+                // Stats
+                let stats = chalk.gray('No index data');
                 if (indexData && indexData.files) {
                     const pkgFiles = indexData.files.filter(f => f.source === name);
                     const tokenCount = pkgFiles.reduce((sum, f) => sum + (f.tokenCount || 0), 0);
                     const fileCount = pkgFiles.length;
                     if (fileCount > 0) {
-                        extraInfo = chalk.cyan(` [${fileCount} files, ~${tokenCount} tokens]`);
+                        stats = chalk.yellow(`${fileCount} files`) + chalk.gray(', ') + chalk.magenta(`~${tokenCount.toLocaleString()} tokens`);
                     }
                 }
+                console.log(chalk.gray(`   └─ Stats: `) + stats);
+            } else {
+                console.log(chalk.gray(`   └─ Status: `) + chalk.red('Not installed'));
             }
-            
-            console.log(`  ${chalk.cyan(name)}: ${sourceSpec} ${status}${extraInfo}`);
+            console.log(''); // Spacer between items
         });
 
       } catch (error) {
