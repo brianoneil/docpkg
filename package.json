@@ -1,10 +1,10 @@
 {
   "name": "docpkg",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Documentation package manager",
   "type": "module",
   "bin": {
-    "docpkg": "./bin/docpkg.js"
+    "docpkg": "bin/docpkg.js"
   },
   "main": "index.js",
   "scripts": {

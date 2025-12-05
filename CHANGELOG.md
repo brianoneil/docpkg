@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.3.3] - 2025-12-04
+
+### Changed
+- **Enhanced Info**: `docpkg info <name>` now displays a detailed file list and token breakdown for the package.
+
 ## [1.3.2] - 2025-12-04
 
 ### Changed
