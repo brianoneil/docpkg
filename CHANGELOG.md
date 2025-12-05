@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.2.2] - 2025-12-04
+
+### Fixed
+- Included `.docpkg-manifest.json` and `CHEATSHEET.md` in NPM package distribution.
+
 ## [1.2.0] - 2025-12-04
 
 ### Added

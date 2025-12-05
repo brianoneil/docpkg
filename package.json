@@ -1,6 +1,6 @@
 {
   "name": "docpkg",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Documentation package manager",
   "type": "module",
   "bin": {
@@ -19,7 +19,9 @@
     "utils",
     "index.js",
     "LICENSE",
-    "README.md"
+    "README.md",
+    ".docpkg-manifest.json",
+    "CHEATSHEET.md"
   ],
   "repository": {
     "type": "git",
