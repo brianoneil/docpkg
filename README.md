@@ -78,11 +78,41 @@ docpkg index
 **AI Enrichment (Optional):**
 You can use an LLM to automatically summarize and tag your documentation for better retrieval.
 
-1. Set your API Key: `export OPENAI_API_KEY=sk-...`
-2. Run enrichment:
-   ```bash
-   docpkg enrich
-   ```
+```bash
+docpkg enrich
+```
+
+**Configuration:**
+
+`docpkg` works with OpenAI, Anthropic, and local Ollama instances. You can configure it via environment variables or `docpkg.json`.
+
+**Option 1: Environment Variables (Quickest)**
+
+*OpenAI:*
+```bash
+export OPENAI_API_KEY="sk-..."
+```
+
+*Ollama (Local):*
+```bash
+export DOCPKG_API_BASE="http://localhost:11434/v1"
+export DOCPKG_API_KEY="ollama" # Required but ignored by Ollama
+export DOCPKG_MODEL="llama3"
+```
+
+**Option 2: docpkg.json (Persistent)**
+
+```json
+{
+  "version": "1",
+  "installPath": "docs",
+  "ai": {
+    "baseURL": "http://localhost:11434/v1",
+    "apiKey": "ollama",
+    "model": "llama3"
+  }
+}
+```
 
 Bundle documentation into a single context file for LLMs:
 

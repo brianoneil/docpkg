@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.4.1] - 2025-12-04
+
+### Changed
+- **Documentation**: Expanded README with detailed AI configuration guide, including Ollama support.
+
 ## [1.4.0] - 2025-12-04
 
 ### Added
