@@ -3,9 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { LockfileManager } from './lockfile.js';
 import { logger } from './logger.js';
-// import { minimatch } from 'minimatch'; // We would need this for glob matching, let's add it later if strict requirement.
-// Actually, let's implement simple suffix matching or rely on external lib if needed. 
-// For "include <glob>", simple string includes or basic regex might suffice for MVP, but let's use a simple helper.
+import { getTokens } from '../utils/tokenizer.js';
 
 export class Indexer {
   constructor(config) {
@@ -141,6 +139,7 @@ export class Indexer {
     
     // Basic stats
     const wordCount = body.split(/\s+/).length;
+    const tokenCount = getTokens(content); // Count tokens of full file (frontmatter + body)
     
     // Extract headings (Simple regex for H1-H3)
     const sections = [];
@@ -162,6 +161,7 @@ export class Indexer {
       category: data.category,
       lastModified: (await fs.stat(filePath)).mtime.toISOString(),
       wordCount,
+      tokenCount,
       sections
     };
   }

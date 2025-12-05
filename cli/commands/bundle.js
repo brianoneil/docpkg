@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { ConfigManager } from '../../core/config.js';
 import { Indexer } from '../../core/indexer.js';
 import { logger } from '../../core/logger.js';
+import { getTokens } from '../../utils/tokenizer.js';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -33,12 +34,14 @@ export function bundleCommand() {
             return;
         }
 
+        const tokenCount = getTokens(content);
+
         // Resolve output path
         const outputPath = path.resolve(process.cwd(), options.output);
         await fs.ensureDir(path.dirname(outputPath));
         
         await fs.writeFile(outputPath, content);
-        logger.success(`Bundle written to ${outputPath}`);
+        logger.success(`Bundle written to ${outputPath} (~${tokenCount} tokens)`);
 
       } catch (error) {
         logger.error(error.message);

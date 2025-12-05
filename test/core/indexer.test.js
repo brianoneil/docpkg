@@ -53,6 +53,7 @@ More content.`);
     expect(index.files[0].title).to.equal('Test Doc');
     expect(index.files[0].tags).to.include('test');
     expect(index.files[0].sections).to.have.lengthOf(2);
+    expect(index.files[0].tokenCount).to.be.a('number'); // Check tokenCount exists
     expect(index.tags['ai']).to.exist;
   });
 

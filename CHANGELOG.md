@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.0] - 2025-12-04
+
+### Added
+- **Token Counting**: Uses `js-tiktoken` (GPT-4 tokenizer) to calculate accurate token counts for all indexed documents.
+- **Enhanced `list`**: Displays file count and total token count per package.
+- **Enhanced `bundle`**: Displays total token count of the generated context bundle.
+
 ## [1.2.3] - 2025-12-04
 
 ### Fixed
