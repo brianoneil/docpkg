@@ -57,10 +57,14 @@ export class ConfigManager {
     
     // Default fallback if nothing exists, usually we might want to throw or return defaults
     // If we want to save, we default to docpkg.json
-    this.loadedFile = docpkgJsonPath; 
-    this.fileType = 'json';
-
+    this.loadedFile = null; // Explicitly null if nothing found
+    // We don't set fileType here to allow save() to decide or prompt
+    
     return this.config;
+  }
+
+  exists() {
+      return !!this.loadedFile;
   }
 
   async addSource(name, sourceSpec) {
@@ -79,7 +83,9 @@ export class ConfigManager {
 
   async save() {
       if (!this.loadedFile) {
-          throw new Error('No config file loaded to save to.');
+          // Default to docpkg.json if no file loaded
+          this.loadedFile = path.join(this.cwd, 'docpkg.json');
+          this.fileType = 'json';
       }
       
       if (this.fileType === 'package.json') {

@@ -85,6 +85,11 @@
     - [x] Implement `docpkg update`
     - [x] Implement `docpkg manifest` (interactive generator)
 
+- [x] **16. UX Improvements**
+    - [x] Auto-initialization in `add`
+    - [x] Auto-indexing and Auto-sync logic
+    - [x] Spinner/Logger improvements
+
 ## Future Phases (Backlog)
 
 - [ ] Plugin System

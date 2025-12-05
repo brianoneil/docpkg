@@ -5,13 +5,13 @@
 
 **docpkg** is a modern package manager for documentation. It treats documentation as a first-class dependency, allowing you to install, version, and bundle markdown files from NPM, Git, and URLs.
 
-It is specifically designed for the AI era, providing tools to **index** and **bundle** documentation into optimized context for LLMs.
+It automatically manages **syncing** from node_modules and **indexing** your documentation for AI context, providing a seamless developer experience.
 
 ## Why?
 
-- **For Developers**: Centralize documentation from multiple repos/libraries into one `docs/` folder.
-- **For AI Agents**: Generate a single `context.md` or JSON index of all your project's dependencies to feed into LLMs.
-- **For Teams**: Share internal guides via private Git repos or NPM packages without copy-pasting files.
+- **For Developers**: Centralize documentation from multiple repos/libraries into one `docs/` folder with a single command.
+- **For AI Agents**: Auto-generates a `docs/index.json` and `context.md` bundle for LLMs.
+- **For Teams**: Share internal guides via private Git repos or NPM packages.
 
 ## Installation
 
@@ -21,26 +21,17 @@ npm install -g docpkg
 
 ## Usage
 
-### Initialization
+### Quick Start
 
-Initialize a new project:
+If you are in a project with a `package.json`, simply add a source. `docpkg` will automatically initialize and configure itself.
 
 ```bash
-docpkg init
-# Or integrate with existing package.json
-docpkg init --npm
+docpkg add npm:@anthropic/prompt-docs
 ```
 
 ### Managing Sources
 
-Prepare your own repo for consumption:
-
-```bash
-# Interactive wizard to generate .docpkg-manifest.json
-docpkg manifest
-```
-
-Add documentation sources:
+Add documentation sources (automatically installs and indexes):
 
 ```bash
 # Add from NPM

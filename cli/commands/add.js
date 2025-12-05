@@ -1,11 +1,11 @@
 import { Command } from 'commander';
 import { ConfigManager } from '../../core/config.js';
 import { Installer } from '../../core/installer.js';
+import { Indexer } from '../../core/indexer.js'; // Import Indexer
 import { logger } from '../../core/logger.js';
-import { exec } from 'child_process';
-import util from 'util';
-
-const execAsync = util.promisify(exec);
+import inquirer from 'inquirer'; // Import inquirer
+import path from 'path';
+import fs from 'fs-extra';
 
 export function addCommand() {
   return new Command('add')
@@ -19,6 +19,62 @@ export function addCommand() {
         const configManager = new ConfigManager();
         await configManager.load();
         
+        // Auto-Init Check
+        if (!configManager.exists()) {
+            logger.warn('No configuration found.');
+            const { init } = await inquirer.prompt([{
+                type: 'confirm',
+                name: 'init',
+                message: 'Initialize docpkg now?',
+                default: true
+            }]);
+
+            if (init) {
+                // Check for package.json
+                const hasPackageJson = await fs.pathExists(path.join(process.cwd(), 'package.json'));
+                let usePackageJson = false;
+                
+                if (hasPackageJson) {
+                    const { integrate } = await inquirer.prompt([{
+                        type: 'confirm',
+                        name: 'integrate',
+                        message: 'Add configuration to package.json?',
+                        default: true
+                    }]);
+                    usePackageJson = integrate;
+                }
+
+                if (usePackageJson) {
+                    const pkgPath = path.join(process.cwd(), 'package.json');
+                    const pkg = await fs.readJson(pkgPath);
+                    pkg.docs = {
+                        version: '1',
+                        installPath: 'docs',
+                        sources: {}
+                    };
+                    await fs.writeJson(pkgPath, pkg, { spaces: 2 });
+                    // Reload config to pick up the new file
+                    await configManager.load();
+                } else {
+                    // Default docpkg.json handled by save() fallback or explicit init
+                    // Let's just rely on configManager.save() logic which defaults to docpkg.json
+                    // But we need to set defaults if empty
+                     configManager.config = {
+                        version: '1',
+                        installPath: 'docs',
+                        structure: 'nested',
+                        sources: {},
+                        cache: { enabled: true }
+                    };
+                    // Force save to create file
+                    await configManager.save();
+                    logger.success('Initialized configuration.');
+                }
+            } else {
+                logger.warn('Proceeding without saving configuration (changes may be lost).');
+            }
+        }
+
         // Initialize installer to check adapters
         const installer = new Installer(configManager.get());
         const match = installer.getAdapter(source);
@@ -35,38 +91,24 @@ export function addCommand() {
             throw new Error('Could not determine package name. Please use --name.');
         }
 
-        logger.info(`Adding ${name} from ${source}...`);
-
         // Update config
         await configManager.addSource(name, source);
-        logger.success(`Added ${name} to config`);
+        // logger.success(`Added ${name} to config`); // Be quieter
 
-        // Install the specific package
-        await installer.install({ [name]: source });
+        // Install
+        await logger.task(`Installing ${name}`, async () => {
+            await installer.install({ [name]: source });
+        });
 
-        // Optional: NPM integration
-        // If it's an npm package and we are likely in an npm project (package.json exists)
-        if (parsed.type === 'npm' && (options.npm || options.saveDev)) {
-            // Check if we should run npm install
-            // For now, let's just log that we would do it, or implement it if simple
-            // Requirements said: "Internally runs npm install --save-dev"
-            // We only do this if we are integrating with package.json? 
-            // Or maybe we always do it for npm packages?
-            // Let's skip the actual `npm install` of the library for now to keep it simple 
-            // unless explicitly requested or implied by future requirements details.
-            // The "docs" are separate from the library code usually.
-            // But if the docs ARE in the library package, we might need it installed?
-            // Our NPM adapter uses `npm pack` so we don't technically need it in node_modules 
-            // unless we want to support the "sync" workflow.
-            // "Workflow 2" says it runs npm install.
-            // Let's leave this as a TODO or implement if easy.
-            // logger.info('Running npm install...');
-            // await execAsync(`npm install --save-dev ${parsed.name}@${parsed.version}`);
-        }
+        // Auto-Index
+        const indexer = new Indexer(configManager.get());
+        await logger.task('Updating index', async () => {
+            await indexer.generateIndex();
+        });
 
-      } catch (error) {
+    } catch (error) {
         logger.error(error.message);
         process.exit(1);
-      }
+    }
     });
 }
