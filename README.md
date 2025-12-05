@@ -75,6 +75,15 @@ docpkg index
 # Creates docs/index.json
 ```
 
+**AI Enrichment (Optional):**
+You can use an LLM to automatically summarize and tag your documentation for better retrieval.
+
+1. Set your API Key: `export OPENAI_API_KEY=sk-...`
+2. Run enrichment:
+   ```bash
+   docpkg enrich
+   ```
+
 Bundle documentation into a single context file for LLMs:
 
 ```bash

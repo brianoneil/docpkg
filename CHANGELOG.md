@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.0] - 2025-12-04
+
+### Added
+- **AI Enrichment**: New `docpkg enrich` command uses OpenAI (or compatible APIs) to automatically summarize documents and extract semantic tags.
+- **Configuration**: Support for `docpkg.json` AI settings (`ai.apiKey`, `ai.model`).
+
 ## [1.3.6] - 2025-12-04
 
 ### Maintenance
