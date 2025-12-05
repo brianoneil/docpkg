@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.3.5] - 2025-12-04
+
+### Maintenance
+- Republish to ensure README renders correctly on NPM.
+- Cleaned up development artifacts.
+
 ## [1.3.4] - 2025-12-04
 
 ### Changed
