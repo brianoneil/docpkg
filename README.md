@@ -26,7 +26,7 @@ npm install -g docpkg
 If you are in a project with a `package.json`, simply add a source. `docpkg` will automatically initialize and configure itself.
 
 ```bash
-docpkg add npm:@anthropic/prompt-docs
+docpkg add npm:docpkg
 ```
 
 ### Managing Sources
@@ -44,10 +44,10 @@ Add documentation sources:
 docpkg add git:https://github.com/brianoneil/docpkg.git#main --name docpkg-docs
 
 # Add from NPM
-docpkg add npm:@anthropic/prompt-docs@latest
+docpkg add npm:docpkg
 
 # Add from Git (branch/tag/commit)
-docpkg add git:https://github.com/org/repo.git#main
+docpkg add git:https://github.com/brianoneil/docpkg.git#v1.0.0 --name docpkg-v1
 
 # Add from URL (Gist example)
 docpkg add https://gist.githubusercontent.com/brianoneil/12345/raw/cheatsheet.md --name cheatsheet
@@ -85,7 +85,7 @@ docpkg bundle --output context.md
 
 # Filter what to bundle
 docpkg bundle --tag ai,security --output ai-context.md
-docpkg bundle --source anthropic-prompting
+docpkg bundle --source docpkg-docs
 ```
 
 ### Maintenance

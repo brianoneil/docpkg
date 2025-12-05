@@ -4,7 +4,7 @@
 ```bash
 npm install -g docpkg
 docpkg init
-docpkg add npm:@anthropic/prompt-docs
+docpkg add npm:docpkg
 ```
 
 ## Core Commands
@@ -44,7 +44,7 @@ docpkg bundle --tag api,security --output context.md
 
 | Type | Format | Example |
 |------|--------|---------|
-| **NPM** | `npm:<pkg>@<ver>` | `npm:uuid@latest` |
-| **Git** | `git:<url>#<ref>` | `git:https://github.com/org/repo.git#main` |
+| **NPM** | `npm:<pkg>@<ver>` | `npm:docpkg@latest` |
+| **Git** | `git:<url>#<ref>` | `git:https://github.com/brianoneil/docpkg.git#main` |
 | **HTTP** | `https://<url>` | `https://example.com/api.md` |
 | **File** | `file:<path>` | `file:./local-docs` |
