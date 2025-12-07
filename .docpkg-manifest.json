@@ -2,11 +2,11 @@
   "name": "docpkg",
   "version": "1.6.0",
   "type": "git",
-  "docsPath": "docs",
+  "docsPath": "src-docs",
   "files": [
-    "docs/CHEATSHEET.md",
-    "docs/CHEATSHEET_CONSUMER.md",
-    "docs/CHEATSHEET_AUTHOR.md",
+    "src-docs/CHEATSHEET.md",
+    "src-docs/CHEATSHEET_CONSUMER.md",
+    "src-docs/CHEATSHEET_AUTHOR.md",
     "README.md"
   ],
   "metadata": {

@@ -5,12 +5,14 @@ import { Indexer } from '../../core/indexer.js';
 import { logger } from '../../core/logger.js';
 import fs from 'fs-extra';
 import path from 'path';
+import inquirer from 'inquirer';
 
 export function enrichCommand() {
   return new Command('enrich')
     .description('Enhance documentation index with AI-generated summaries and tags')
+    .argument('[packages...]', 'Specific packages to enrich (optional)')
     .option('--force', 'Re-analyze documents even if already enriched')
-    .action(async (options) => {
+    .action(async (packages, options) => {
       try {
         const configManager = new ConfigManager();
         await configManager.load();
@@ -20,22 +22,50 @@ export function enrichCommand() {
         const manifestPath = path.join(cwd, '.docpkg-manifest.json');
         const isSourceRepo = await fs.pathExists(manifestPath);
         
-        // Check if we should run in "Source Mode" (Authoring) or "Installed Mode" (Consumption)
-        // Priority: If manifest exists and NO sources are installed, assume Source Mode.
-        // Or if user explicitly asks? For now, auto-detect.
-        // Actually, if manifest exists, we probably WANT to enrich the source docs.
-        
         let enrichmentOptions = {};
-        let outputName = 'index.json'; // Default for installed
-        let saveMethod = 'saveIndex'; // Method on indexer to call
-
-        if (isSourceRepo) {
+        let outputName = 'index.json'; 
+        
+        if (isSourceRepo && (!packages || packages.length === 0)) {
+            // Source Mode (Default if no packages specified and manifest exists)
+            // If packages specified, we assume they mean installed deps unless one matches manifest name?
+            // Let's stick to simple: if source repo and no args -> enrich source.
             const manifest = await fs.readJson(manifestPath);
             enrichmentOptions = { mode: 'source', manifest };
-            outputName = '.docpkg-index.json'; // Source index file
+            outputName = '.docpkg-index.json'; 
             logger.info('Detected .docpkg-manifest.json: Enriching SOURCE documentation.');
         } else {
+            // Installed Mode
             logger.info('Enriching INSTALLED documentation.');
+            
+            // If packages provided via CLI, use them
+            if (packages && packages.length > 0) {
+                enrichmentOptions.packages = packages;
+            } else {
+                // Interactive Selection
+                // 1. Get list of installed packages
+                const indexer = new Indexer(config);
+                const fullIndex = await indexer.generateIndex();
+                const sources = fullIndex.sources.map(s => s.name);
+                
+                if (sources.length === 0) {
+                    logger.warn('No installed documentation found to enrich.');
+                    return;
+                }
+
+                const { selected } = await inquirer.prompt([{
+                    type: 'checkbox',
+                    name: 'selected',
+                    message: 'Select packages to enrich (Space to select, Enter to confirm):',
+                    choices: sources,
+                    pageSize: 10
+                }]);
+
+                if (selected.length === 0) {
+                    logger.info('No packages selected.');
+                    return;
+                }
+                enrichmentOptions.packages = selected;
+            }
         }
 
         const enricher = new Enricher(config);
@@ -44,12 +74,7 @@ export function enrichCommand() {
             const { index, updatedCount } = await enricher.enrichAll(options.force, enrichmentOptions);
             
             if (updatedCount > 0 || isSourceRepo) {
-                // Even if 0 updates, if it's source repo we might want to save the index initially?
-                // Assuming updatedCount tracks successful AI calls.
-                // If files exist but AI failed or skipped, we still might want index structure.
-                
                 const indexer = new Indexer(config);
-                // Manually save to specific file if source mode
                 if (isSourceRepo) {
                     const outPath = path.resolve(cwd, outputName);
                     await fs.writeJson(outPath, index, { spaces: 2 });

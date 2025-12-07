@@ -101,7 +101,11 @@ docpkg index
 You can use an LLM to automatically summarize and tag your documentation for better retrieval.
 
 ```bash
+# Enrich all (interactive selection if no args)
 docpkg enrich
+
+# Enrich specific packages
+docpkg enrich commander react-docs
 ```
 
 **Configuration:**

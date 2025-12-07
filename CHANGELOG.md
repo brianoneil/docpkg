@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.8.2] - 2025-12-04
+
+### Maintenance
+- **Structure**: Migrated internal documentation to `src-docs/` to follow best practices (separating source docs from installed dependencies).
+
+## [1.8.1] - 2025-12-04
+
+### Changed
+- **Documentation**: Updated README and Consumer Cheatsheet with targeted enrichment examples.
+
+## [1.8.0] - 2025-12-04
+
+### Added
+- **Targeted Enrichment**: `docpkg enrich [packages...]` allows enriching specific installed packages to control AI costs.
+- **Interactive Selection**: Running `docpkg enrich` (in consumption mode) now launches an interactive checkbox menu to select which packages to enrich.
+
 ## [1.7.2] - 2025-12-04
 
 ### Security

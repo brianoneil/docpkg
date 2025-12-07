@@ -1,6 +1,6 @@
 {
   "name": "docpkg",
-  "version": "1.7.2",
+  "version": "1.8.2",
   "description": "Documentation package manager",
   "type": "module",
   "bin": {

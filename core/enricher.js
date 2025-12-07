@@ -19,8 +19,14 @@ export class Enricher {
     let index = await this.indexer.generateIndex(options);
     
     let updatedCount = 0;
+    
+    // Filter files if 'packages' filter is provided
+    let filesToEnrich = index.files;
+    if (options.packages && options.packages.length > 0) {
+        filesToEnrich = index.files.filter(f => options.packages.includes(f.source));
+    }
 
-    for (const file of index.files) {
+    for (const file of filesToEnrich) {
         // Skip if already enriched unless forced
         if (file.aiEnriched && !force) {
             continue;
