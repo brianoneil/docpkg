@@ -100,12 +100,17 @@ export class NpmAdapter extends BaseAdapter {
 
       if (await fs.pathExists(manifestPath)) {
         const manifest = await fs.readJson(manifestPath);
+        
+        // Sanitize patterns
+        const sanitize = (p) => p.replace(/^(\.\.(\/|\\|$))+/, '').replace(/^\/+/, '');
+
         if (manifest.files && manifest.files.length > 0) {
-          patterns = manifest.files;
+          patterns = manifest.files.map(sanitize);
         } else if (manifest.docsPath) {
-            patterns = [`${manifest.docsPath}/**`];
+            const cleanDocsPath = sanitize(manifest.docsPath);
+            patterns = [`${cleanDocsPath}/**`];
         }
-        if (manifest.docsPath) basePath = manifest.docsPath;
+        if (manifest.docsPath) basePath = sanitize(manifest.docsPath);
       }
 
       // Ensure we copy the pre-computed index if it exists

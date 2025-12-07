@@ -11,6 +11,13 @@ import { logger } from '../core/logger.js';
  * @param {string} [basePath] - Optional base path to strip from the destination (e.g. 'docs').
  */
 export async function copyGlob(sourceDir, targetDir, patterns, basePath = '') {
+  logger.debug(`copyGlob: sourceDir=${sourceDir}, targetDir=${targetDir}, patterns=${patterns}`);
+  
+  if (!await fs.pathExists(sourceDir)) {
+      logger.warn(`copyGlob: sourceDir does not exist: ${sourceDir}`);
+      return 0;
+  }
+
   // fast-glob expects unix-style paths even on windows
   const entries = await fg(patterns, { cwd: sourceDir, dot: true });
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.7.2] - 2025-12-04
+
+### Security
+- **Path Sanitization**: Hardened path handling in `GitAdapter` and `NpmAdapter` to prevent directory traversal attempts from malicious manifests.
+- **Defensive Globbing**: `copyGlob` now verifies source directory existence before scanning.
+
 ## [1.7.1] - 2025-12-04
 
 ### Added
