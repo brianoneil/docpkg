@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.2] - 2025-12-04
+
+### Changed
+- **Documentation**: Added `package.json` configuration example for AI settings and clarified API key security best practices.
+
 ## [1.6.1] - 2025-12-04
 
 ### Changed

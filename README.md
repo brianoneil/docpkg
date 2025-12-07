@@ -132,6 +132,24 @@ export DOCPKG_MODEL="llama3"
 }
 ```
 
+**Option 3: package.json**
+
+You can add the configuration to your existing `package.json`:
+
+```json
+{
+  "name": "my-app",
+  "docs": {
+    "version": "1",
+    "installPath": "docs",
+    "ai": {
+      "model": "gpt-4o"
+    }
+  }
+}
+```
+*Note: Do not commit API keys to `package.json`. `docpkg` will automatically pick up `OPENAI_API_KEY` from your environment if `apiKey` is missing in the config.*
+
 Bundle documentation into a single context file for LLMs:
 
 ```bash
