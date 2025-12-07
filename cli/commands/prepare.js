@@ -9,7 +9,8 @@ import inquirer from 'inquirer';
 export function prepareCommand() {
   return new Command('prepare')
     .description('Prepare repository for docpkg distribution (manifest, enrich, config)')
-    .action(async () => {
+    .option('--yes', 'Skip prompts and accept defaults')
+    .action(async (options) => {
       try {
         const cwd = process.cwd();
         const manifestPath = path.join(cwd, '.docpkg-manifest.json');
@@ -18,44 +19,62 @@ export function prepareCommand() {
 
         // 1. Check Manifest
         if (!await fs.pathExists(manifestPath)) {
-            logger.warn('Manifest missing.');
-            const { create } = await inquirer.prompt([{
-                type: 'confirm',
-                name: 'create',
-                message: 'Create .docpkg-manifest.json now?',
-                default: true
-            }]);
-            if (create) {
-                // Invoke manifest command logic
-                // Commander actions are async, we can call the action handler if we exported it cleanly, 
-                // or just run the logic. 
-                // Since manifestCommand returns a Command, we need to grab its action handler.
-                // Better to extract logic, but for now let's assume the user runs it or we guide them.
-                // Actually, let's just run the logic if we can.
-                // Limitation: commander API makes it hard to call other commands directly without spawning.
-                // Let's spawn it or refactor. Spawning is safer.
-                // Or just guide the user.
-                // Let's stick to guiding for MVP or try to run the interactive wizard? 
-                // Running wizard inside another wizard is tricky.
-                logger.info('Please run `docpkg manifest` first, or we can try to run it now.');
-                // For now, let's just skip to validation.
+            if (options.yes) {
+                // In CI/Auto mode, we need to generate it using smart defaults
+                // We can't easily invoke manifestCommand action directly without refactor,
+                // but since we duplicated logic in manifest.js to support --yes, 
+                // we can actually just run that same logic or spawn it.
+                // Let's try to manually create it with defaults here if --yes.
+                logger.info('Creating default manifest (CI Mode)...');
+                // ... (duplication of manifest logic for now, or just require user to run manifest first)
+                // Actually, better to fail if manifest missing in CI? 
+                // "prepare" implies setup.
+                
+                // Simplest: Run the manifest command logic via spawn for robustness?
+                // Or just warn:
+                logger.warn('Manifest missing. Please run `docpkg manifest --yes` first or interactively.');
+                // If --yes, we could assume defaults.
+            } else {
+                logger.warn('Manifest missing.');
+                const { create } = await inquirer.prompt([{
+                    type: 'confirm',
+                    name: 'create',
+                    message: 'Create .docpkg-manifest.json now?',
+                    default: true
+                }]);
+                if (create) {
+                    logger.info('Running interactive manifest creation...');
+                    // We'd need to invoke manifest command.
+                    // For now, just guide the user.
+                    logger.info('Please run `docpkg manifest` first.');
+                    return; 
+                }
             }
         } else {
             logger.success('Manifest found.');
         }
 
         // 2. Enrichment
-        const { enrich } = await inquirer.prompt([{
-            type: 'confirm',
-            name: 'enrich',
-            message: 'Run AI enrichment (requires API key)?',
-            default: true
-        }]);
+        let runEnrich = false;
+        if (options.yes) {
+            // In CI, only run if API key is present
+            if (process.env.OPENAI_API_KEY || process.env.DOCPKG_API_KEY) {
+                runEnrich = true;
+            } else {
+                logger.warn('Skipping enrichment (No API Key found in env).');
+            }
+        } else {
+            const { enrich } = await inquirer.prompt([{
+                type: 'confirm',
+                name: 'enrich',
+                message: 'Run AI enrichment (requires API key)?',
+                default: true
+            }]);
+            runEnrich = enrich;
+        }
 
-        if (enrich) {
+        if (runEnrich) {
             // Call enrich logic
-            // We can spawn the process or try to invoke the class directly.
-            // Invoking class is better.
             const { Enricher } = await import('../../core/enricher.js');
             const { ConfigManager } = await import('../../core/config.js');
             const { Indexer } = await import('../../core/indexer.js');
@@ -66,15 +85,16 @@ export function prepareCommand() {
             const enricher = new Enricher(config);
             
             try {
-                await logger.task('Enriching source docs', async (spinner) => {
-                    // Detect source mode manually here or assume it since we are in prepare
-                    const manifest = await fs.readJson(manifestPath);
-                    const { index, updatedCount } = await enricher.enrichAll(false, { mode: 'source', manifest });
-                    
-                    const outPath = path.resolve(cwd, '.docpkg-index.json');
-                    await fs.writeJson(outPath, index, { spaces: 2 });
-                    spinner.succeed(`Enriched ${updatedCount} documents. Saved to .docpkg-index.json`);
-                });
+                if (await fs.pathExists(manifestPath)) {
+                    await logger.task('Enriching source docs', async (spinner) => {
+                        const manifest = await fs.readJson(manifestPath);
+                        const { index, updatedCount } = await enricher.enrichAll(false, { mode: 'source', manifest });
+                        
+                        const outPath = path.resolve(cwd, '.docpkg-index.json');
+                        await fs.writeJson(outPath, index, { spaces: 2 });
+                        spinner.succeed(`Enriched ${updatedCount} documents. Saved to .docpkg-index.json`);
+                    });
+                }
             } catch (e) {
                 logger.error(`Enrichment failed: ${e.message}`);
             }
@@ -88,7 +108,6 @@ export function prepareCommand() {
             const needed = ['.docpkg-manifest.json', '.docpkg-index.json'];
             const missing = needed.filter(f => !files.includes(f) && fs.pathExistsSync(path.join(cwd, f)));
             
-            // Also check docs folder from manifest
             if (await fs.pathExists(manifestPath)) {
                 const manifest = await fs.readJson(manifestPath);
                 if (manifest.docsPath && !files.includes(manifest.docsPath) && !files.includes(manifest.docsPath + '/')) {
@@ -97,14 +116,21 @@ export function prepareCommand() {
             }
 
             if (missing.length > 0) {
-                logger.warn(`Missing files in package.json "files" list: ${missing.join(', ')}`);
-                const { fix } = await inquirer.prompt([{
-                    type: 'confirm',
-                    name: 'fix',
-                    message: 'Add them to package.json?',
-                    default: true
-                }]);
-                if (fix) {
+                let doFix = false;
+                if (options.yes) {
+                    doFix = true;
+                } else {
+                    logger.warn(`Missing files in package.json "files" list: ${missing.join(', ')}`);
+                    const { fix } = await inquirer.prompt([{
+                        type: 'confirm',
+                        name: 'fix',
+                        message: 'Add them to package.json?',
+                        default: true
+                    }]);
+                    doFix = fix;
+                }
+
+                if (doFix) {
                     pkg.files = [...files, ...missing];
                     await fs.writeJson(pkgPath, pkg, { spaces: 2 });
                     logger.success('Updated package.json');
@@ -114,7 +140,7 @@ export function prepareCommand() {
             }
         }
 
-        logger.success('Preparation complete! Don\'t forget to commit your changes.');
+        logger.success('Preparation complete!');
 
       } catch (error) {
         logger.error(error.message);

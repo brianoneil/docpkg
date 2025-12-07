@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.7.1] - 2025-12-04
+
+### Added
+- **CI/CD Support**: Added `--yes` flag to `docpkg add` to skip initialization prompts in automated environments.
+
+## [1.7.0] - 2025-12-04
+
+### Added
+- **CI/CD Support**: `docpkg prepare --yes` allows running the authoring workflow in automated environments, skipping prompts and accepting defaults.
+- **Smart Manifest**: `docpkg manifest` now intelligently detects your source documentation folder (`src-docs`, `documentation`) and warns if you choose a path that conflicts with installed dependencies.
+
 ## [1.6.2] - 2025-12-04
 
 ### Changed

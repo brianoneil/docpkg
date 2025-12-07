@@ -14,6 +14,7 @@ export function addCommand() {
     .option('--name <name>', 'Custom name for the source')
     .option('--npm', 'Use npm install for npm sources')
     .option('--save-dev', 'Add to devDependencies (npm only, default)', true)
+    .option('--yes', 'Skip prompts and use defaults (e.g. auto-init)')
     .action(async (source, options) => {
       try {
         const configManager = new ConfigManager();
@@ -21,27 +22,37 @@ export function addCommand() {
         
         // Auto-Init Check
         if (!configManager.exists()) {
-            logger.warn('No configuration found.');
-            const { init } = await inquirer.prompt([{
-                type: 'confirm',
-                name: 'init',
-                message: 'Initialize docpkg now?',
-                default: true
-            }]);
+            let doInit = false;
+            if (options.yes) {
+                doInit = true;
+            } else {
+                logger.warn('No configuration found.');
+                const { init } = await inquirer.prompt([{
+                    type: 'confirm',
+                    name: 'init',
+                    message: 'Initialize docpkg now?',
+                    default: true
+                }]);
+                doInit = init;
+            }
 
-            if (init) {
+            if (doInit) {
                 // Check for package.json
                 const hasPackageJson = await fs.pathExists(path.join(process.cwd(), 'package.json'));
                 let usePackageJson = false;
                 
                 if (hasPackageJson) {
-                    const { integrate } = await inquirer.prompt([{
-                        type: 'confirm',
-                        name: 'integrate',
-                        message: 'Add configuration to package.json?',
-                        default: true
-                    }]);
-                    usePackageJson = integrate;
+                    if (options.yes) {
+                        usePackageJson = true;
+                    } else {
+                        const { integrate } = await inquirer.prompt([{
+                            type: 'confirm',
+                            name: 'integrate',
+                            message: 'Add configuration to package.json?',
+                            default: true
+                        }]);
+                        usePackageJson = integrate;
+                    }
                 }
 
                 if (usePackageJson) {

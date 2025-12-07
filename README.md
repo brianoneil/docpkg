@@ -70,11 +70,15 @@ docpkg sync
 
 If you maintain a documentation repository, you can pre-compute the AI index so consumers don't need API keys.
 
+**Recommendation:** Keep your source documentation in `src-docs/` or `documentation/` to avoid conflicts with the `docs/` folder where `docpkg` installs dependencies.
+
 1.  **Prepare Repository**:
     Run this single command to generate the manifest, enrich your docs with AI tags, and validate your config.
     ```bash
     docpkg prepare
     ```
+    *For CI/CD pipelines, use `docpkg prepare --yes` to skip prompts.*
+
 2.  **Commit & Push**:
     ```bash
     git add .docpkg-manifest.json .docpkg-index.json
