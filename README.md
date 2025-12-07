@@ -31,7 +31,7 @@ docpkg add npm:docpkg
 Prepare your own repo for consumption (like this one!):
 
 ```bash
-docpkg manifest
+docpkg prepare
 ```
 
 Add documentation sources:
@@ -70,17 +70,12 @@ docpkg sync
 
 If you maintain a documentation repository, you can pre-compute the AI index so consumers don't need API keys.
 
-1.  **Initialize Manifest**:
+1.  **Prepare Repository**:
+    Run this single command to generate the manifest, enrich your docs with AI tags, and validate your config.
     ```bash
-    docpkg manifest
+    docpkg prepare
     ```
-2.  **Enrich Source**:
-    ```bash
-    # Requires OPENAI_API_KEY
-    docpkg enrich
-    ```
-    This creates `.docpkg-index.json` containing summaries and tags.
-3.  **Commit & Push**:
+2.  **Commit & Push**:
     ```bash
     git add .docpkg-manifest.json .docpkg-index.json
     git commit -m "Add docs manifest and AI index"
@@ -244,6 +239,13 @@ Interactive wizard to generate a `.docpkg-manifest.json` file. Run this in your 
 
 ```bash
 docpkg manifest
+```
+
+### `prepare`
+All-in-one authoring command. Generates manifest, runs AI enrichment to create a portable index (`.docpkg-index.json`), and checks `package.json` configuration.
+
+```bash
+docpkg prepare
 ```
 
 ### `clean`

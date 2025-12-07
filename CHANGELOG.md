@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.1] - 2025-12-04
+
+### Changed
+- **Documentation**: Updated README to promote `docpkg prepare` as the primary authoring workflow.
+
 ## [1.6.0] - 2025-12-04
 
 ### Added
