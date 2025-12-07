@@ -9,13 +9,14 @@ export class Enricher {
     this.ai = new AIService(config);
   }
 
-  async enrichAll(force = false) {
+  async enrichAll(force = false, options = {}) {
     if (!this.ai.isConfigured()) {
         throw new Error('AI is not configured. Please set OPENAI_API_KEY environment variable.');
     }
 
     // 1. Load current index (or generate fresh one)
-    let index = await this.indexer.generateIndex();
+    // Pass options to generateIndex (allows source mode)
+    let index = await this.indexer.generateIndex(options);
     
     let updatedCount = 0;
 

@@ -120,6 +120,13 @@ export class GitAdapter extends BaseAdapter {
             if (manifest.docsPath) basePath = manifest.docsPath;
         }
         
+        // Ensure we copy the pre-computed index if it exists
+        const indexFilename = '.docpkg-index.json';
+        const sourceIndexPath = path.join(cachedPath, indexFilename);
+        if (await fs.pathExists(sourceIndexPath)) {
+            await fs.copy(sourceIndexPath, path.join(targetDir, indexFilename));
+        }
+        
         // Use copyGlob
         const copiedCount = await copyGlob(cachedPath, targetDir, patterns, basePath);
         

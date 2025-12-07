@@ -1,11 +1,13 @@
 {
   "name": "docpkg",
-  "version": "1.2.0",
+  "version": "1.6.0",
   "type": "git",
-  "docsPath": ".",
+  "docsPath": "docs",
   "files": [
-    "README.md",
-    "CHEATSHEET.md"
+    "docs/CHEATSHEET.md",
+    "docs/CHEATSHEET_CONSUMER.md",
+    "docs/CHEATSHEET_AUTHOR.md",
+    "README.md"
   ],
   "metadata": {
     "title": "docpkg Documentation",

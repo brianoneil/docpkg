@@ -1,0 +1,238 @@
+{
+  "generatedAt": "2025-12-07T18:10:31.948Z",
+  "sources": [
+    {
+      "name": "docpkg",
+      "type": "source",
+      "path": "docs"
+    }
+  ],
+  "files": [
+    {
+      "path": "docs/CHEATSHEET.md",
+      "source": "docpkg",
+      "absolutePath": "/Users/boneil/projects/brainivy/docpkg/docs/CHEATSHEET.md",
+      "title": "docpkg Cheatsheet",
+      "description": "This document provides a cheatsheet for using docpkg, detailing installation commands, core commands, AI workflows, and supported source formats.",
+      "tags": [
+        "docpkg",
+        "documentation",
+        "npm",
+        "ai-workflows",
+        "commands"
+      ],
+      "lastModified": "2025-12-07T17:43:26.542Z",
+      "wordCount": 193,
+      "tokenCount": 359,
+      "sections": [
+        {
+          "title": "docpkg Cheatsheet",
+          "level": 1
+        },
+        {
+          "title": "Quick Start",
+          "level": 2
+        },
+        {
+          "title": "Core Commands",
+          "level": 2
+        },
+        {
+          "title": "AI Workflows",
+          "level": 2
+        },
+        {
+          "title": "Source Formats",
+          "level": 2
+        }
+      ],
+      "aiSections": [
+        {
+          "title": "Quick Start",
+          "summary": "Instructions for installing docpkg and initializing a project."
+        },
+        {
+          "title": "Core Commands",
+          "summary": "A table of primary commands with descriptions for managing documentation sources."
+        },
+        {
+          "title": "AI Workflows",
+          "summary": "Commands for generating search indexes and creating context bundles for AI use."
+        },
+        {
+          "title": "Source Formats",
+          "summary": "Defines various source formats supported by docpkg, including NPM, Git, HTTP, and local files."
+        }
+      ],
+      "aiEnriched": true,
+      "aiEnrichedAt": "2025-12-07T18:10:38.376Z"
+    },
+    {
+      "path": "docs/CHEATSHEET_AUTHOR.md",
+      "source": "docpkg",
+      "absolutePath": "/Users/boneil/projects/brainivy/docpkg/docs/CHEATSHEET_AUTHOR.md",
+      "title": "Author Cheatsheet",
+      "description": "This document provides a cheatsheet for authors on how to use `docpkg` for distributing documentation with AI-ready metadata, covering preparation, optional AI enrichment, and distribution methods via Git and NPM.",
+      "tags": [
+        "documentation",
+        "metadata",
+        "ai-enrichment",
+        "git",
+        "npm"
+      ],
+      "lastModified": "2025-12-07T17:57:02.661Z",
+      "wordCount": 117,
+      "tokenCount": 246,
+      "sections": [
+        {
+          "title": "Author Cheatsheet",
+          "level": 1
+        },
+        {
+          "title": "1. Preparation",
+          "level": 2
+        },
+        {
+          "title": "2. AI Enrichment (Optional but Recommended)",
+          "level": 2
+        },
+        {
+          "title": "Or configure locally in docpkg.json",
+          "level": 1
+        },
+        {
+          "title": "3. Distribution",
+          "level": 2
+        }
+      ],
+      "aiSections": [
+        {
+          "title": "Preparation",
+          "summary": "Instructions to create a manifest using `docpkg` by running commands in the repository root."
+        },
+        {
+          "title": "AI Enrichment (Optional but Recommended)",
+          "summary": "Guidelines for configuring and running AI enrichment to pre-compute summaries and tags for documentation."
+        },
+        {
+          "title": "Distribution",
+          "summary": "Steps for distributing documentation via Git and NPM, including commands for committing and publishing necessary files."
+        }
+      ],
+      "aiEnriched": true,
+      "aiEnrichedAt": "2025-12-07T18:10:43.750Z"
+    },
+    {
+      "path": "docs/CHEATSHEET_CONSUMER.md",
+      "source": "docpkg",
+      "absolutePath": "/Users/boneil/projects/brainivy/docpkg/docs/CHEATSHEET_CONSUMER.md",
+      "title": "Consumer Cheatsheet",
+      "description": "This document provides a comprehensive cheatsheet for using `docpkg` to manage documentation dependencies in projects, covering setup, installation, usage, and maintenance.",
+      "tags": [
+        "docpkg",
+        "documentation-management",
+        "cheatsheet",
+        "setup",
+        "maintenance"
+      ],
+      "lastModified": "2025-12-07T17:56:57.016Z",
+      "wordCount": 143,
+      "tokenCount": 272,
+      "sections": [
+        {
+          "title": "Consumer Cheatsheet",
+          "level": 1
+        },
+        {
+          "title": "1. Setup",
+          "level": 2
+        },
+        {
+          "title": "New project",
+          "level": 1
+        },
+        {
+          "title": "Existing NPM project",
+          "level": 1
+        },
+        {
+          "title": "2. Install Docs",
+          "level": 2
+        },
+        {
+          "title": "From NPM",
+          "level": 1
+        },
+        {
+          "title": "From Git",
+          "level": 1
+        },
+        {
+          "title": "From URL",
+          "level": 1
+        },
+        {
+          "title": "Install from config",
+          "level": 1
+        },
+        {
+          "title": "Sync from node_modules",
+          "level": 1
+        },
+        {
+          "title": "3. Use Docs (AI)",
+          "level": 2
+        },
+        {
+          "title": "By Tag",
+          "level": 1
+        },
+        {
+          "title": "By Source",
+          "level": 1
+        },
+        {
+          "title": "4. Maintenance",
+          "level": 2
+        },
+        {
+          "title": "Check what you have",
+          "level": 1
+        },
+        {
+          "title": "Get details",
+          "level": 1
+        },
+        {
+          "title": "Update",
+          "level": 1
+        },
+        {
+          "title": "Remove",
+          "level": 1
+        }
+      ],
+      "aiSections": [
+        {
+          "title": "Setup",
+          "summary": "Instructions for initializing `docpkg` in new or existing projects."
+        },
+        {
+          "title": "Install Docs",
+          "summary": "Guidelines for adding documentation sources and syncing/installing from configurations."
+        },
+        {
+          "title": "Use Docs (AI)",
+          "summary": "Details on bundling documentation for AI tools, with options for filtering."
+        },
+        {
+          "title": "Maintenance",
+          "summary": "Commands for listing, updating, and removing installed documentation packages."
+        }
+      ],
+      "aiEnriched": true,
+      "aiEnrichedAt": "2025-12-07T18:10:49.954Z"
+    }
+  ],
+  "tags": {}
+}

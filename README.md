@@ -66,6 +66,29 @@ Sync docs from installed node_modules (for NPM projects):
 docpkg sync
 ```
 
+### Authoring Workflow
+
+If you maintain a documentation repository, you can pre-compute the AI index so consumers don't need API keys.
+
+1.  **Initialize Manifest**:
+    ```bash
+    docpkg manifest
+    ```
+2.  **Enrich Source**:
+    ```bash
+    # Requires OPENAI_API_KEY
+    docpkg enrich
+    ```
+    This creates `.docpkg-index.json` containing summaries and tags.
+3.  **Commit & Push**:
+    ```bash
+    git add .docpkg-manifest.json .docpkg-index.json
+    git commit -m "Add docs manifest and AI index"
+    git push
+    ```
+
+Consumers who install your repo will automatically inherit these tags and summaries!
+
 ### AI Features
 
 Generate a searchable index of all documentation:

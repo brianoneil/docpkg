@@ -14,6 +14,7 @@ import { verifyCommand } from './commands/verify.js';
 import { updateCommand } from './commands/update.js';
 import { manifestCommand } from './commands/manifest.js';
 import { enrichCommand } from './commands/enrich.js';
+import { prepareCommand } from './commands/prepare.js';
 
 // Load package.json to get version
 const packageJson = await fs.readJson(new URL('../package.json', import.meta.url));
@@ -37,5 +38,6 @@ program.addCommand(verifyCommand());
 program.addCommand(updateCommand());
 program.addCommand(manifestCommand());
 program.addCommand(enrichCommand());
+program.addCommand(prepareCommand());
 
 program.parse();

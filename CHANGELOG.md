@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0] - 2025-12-04
+
+### Added
+- **`docpkg prepare`**: A unified command for authors to setup their repo (`manifest`), enrich docs (`enrich`), and validate `package.json` configuration in one go.
+- **Author Documentation**: Added `CHEATSHEET_AUTHOR.md` and `CHEATSHEET_CONSUMER.md`.
+
+## [1.5.0] - 2025-12-04
+
+### Added
+- **Authoring Workflow**: `docpkg enrich` now detects `.docpkg-manifest.json` and generates a portable `.docpkg-index.json` for distribution.
+- **Smart Indexing**: `docpkg` now automatically uses pre-computed indices (`.docpkg-index.json`) found in installed packages, allowing consumers to benefit from AI enrichment without needing API keys.
+
 ## [1.4.1] - 2025-12-04
 
 ### Changed

@@ -1,6 +1,6 @@
 {
   "name": "docpkg",
-  "version": "1.4.1",
+  "version": "1.6.0",
   "description": "Documentation package manager",
   "type": "module",
   "bin": {
@@ -21,7 +21,11 @@
     "LICENSE",
     "README.md",
     ".docpkg-manifest.json",
-    "CHEATSHEET.md"
+    "CHEATSHEET.md",
+    "CHEATSHEET_CONSUMER.md",
+    "CHEATSHEET_AUTHOR.md",
+    ".docpkg-index.json",
+    "docs"
   ],
   "repository": {
     "type": "git",

@@ -11,11 +11,9 @@ export class Indexer {
     this.lockfileManager = new LockfileManager();
   }
 
-  async generateIndex() {
-    await this.lockfileManager.load();
-    const lockfile = this.lockfileManager.data;
-    const installPath = path.resolve(process.cwd(), this.config.installPath);
-
+  async generateIndex(options = {}) {
+    // Options: { mode: 'installed' | 'source', manifest: object }
+    
     const index = {
       generatedAt: new Date().toISOString(),
       sources: [],
@@ -23,7 +21,55 @@ export class Indexer {
       tags: {}
     };
 
-    // 1. Iterate through installed sources in lockfile
+    if (options.mode === 'source' && options.manifest) {
+        // Source Mode: Index files based on Manifest
+        const manifest = options.manifest;
+        const sourcePath = path.resolve(process.cwd(), manifest.docsPath || '.');
+        
+        index.sources.push({
+            name: manifest.name || 'local',
+            type: 'source',
+            path: manifest.docsPath || '.'
+        });
+
+        // Scan files based on manifest.files glob or docsPath
+        // TODO: Use glob copy logic or fast-glob directly? fast-glob is better.
+        // For now, reusing scanFiles (recursive) on docsPath if available, 
+        // or we should assume docsPath is the root.
+        
+        // Use fast-glob if available (we added it in v1.2.3)
+        // But scanFiles is simple recursive. Let's stick to scanFiles for consistency 
+        // unless we want to strictly follow manifest.files globs.
+        // Using scanFiles on docsPath is safest for "Source" mode MVP.
+        
+        if (await fs.pathExists(sourcePath)) {
+            const files = await this.scanFiles(sourcePath);
+            for (const file of files) {
+                const relativePath = path.relative(process.cwd(), file);
+                const metadata = await this.extractMetadata(file);
+                index.files.push({
+                    path: relativePath,
+                    source: manifest.name || 'local',
+                    absolutePath: file,
+                    ...metadata
+                });
+                // Tags logic...
+                if (metadata.tags) {
+                    for (const tag of metadata.tags) {
+                        if (!index.tags[tag]) index.tags[tag] = [];
+                        index.tags[tag].push(relativePath);
+                    }
+                }
+            }
+        }
+        
+        return index;
+    }
+
+    // Default: Installed Mode (Lockfile)
+    await this.lockfileManager.load();
+    const lockfile = this.lockfileManager.data;
+    // ... existing logic ...
     for (const [sourceName, sourceData] of Object.entries(lockfile.sources)) {
       const sourcePath = path.resolve(process.cwd(), sourceData.extractedPath);
       
@@ -39,12 +85,47 @@ export class Indexer {
         continue;
       }
 
+      // Check for pre-computed index
+      const precomputedIndexPath = path.join(sourcePath, '.docpkg-index.json');
+      let precomputedData = null;
+      if (await fs.pathExists(precomputedIndexPath)) {
+          try {
+              precomputedData = await fs.readJson(precomputedIndexPath);
+              // logger.debug(`Using pre-computed index for ${sourceName}`);
+          } catch (e) {
+              logger.warn(`Failed to read .docpkg-index.json for ${sourceName}: ${e.message}`);
+          }
+      }
+
       // 2. Scan for markdown files recursively
       const files = await this.scanFiles(sourcePath);
 
       for (const file of files) {
         const relativePath = path.relative(process.cwd(), file);
-        const metadata = await this.extractMetadata(file);
+        
+        // Try to find metadata in precomputed index first
+        let metadata = null;
+        if (precomputedData && precomputedData.files) {
+            // Precomputed paths are likely relative to THAT source root.
+            // We need to match them. 
+            // sourcePath is absolute. file is absolute.
+            // path.relative(sourcePath, file) gives relative path inside source.
+            const relToSource = path.relative(sourcePath, file);
+            // The precomputed index likely stores paths relative to repo root?
+            // If generated via 'source mode', paths are relative to CWD (repo root).
+            // If sourcePath IS the extraction of repo root, it should match.
+            
+            const match = precomputedData.files.find(f => f.path === relToSource || f.absolutePath?.endsWith(relToSource));
+            if (match) {
+                metadata = match;
+                // Ensure absolutePath is correct for THIS machine
+                metadata.absolutePath = file;
+            }
+        }
+
+        if (!metadata) {
+            metadata = await this.extractMetadata(file);
+        }
 
         const fileEntry = {
           path: relativePath,
